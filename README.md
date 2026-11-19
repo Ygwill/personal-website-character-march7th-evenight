@@ -10,7 +10,7 @@
 
 ```bash
 git lfs install
-git clone https://git.ygwill.asia/personal-website/character-march7th-evenight.git
+git clone https://git.ygwill.top/personal-website/character-march7th-evenight.git
 cd character-march7th-evenight
 npm install
 npm run dev              # http://127.0.0.1:5177

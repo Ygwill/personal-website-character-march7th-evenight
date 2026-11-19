@@ -1,7 +1,7 @@
 // 站点级配置：换角色时只需要改 character.js，这个文件按仓库改一次即可
 export const org = {
   name: 'personal-website',
-  url: 'https://git.ygwill.asia/personal-website',
+  url: 'https://git.ygwill.top/personal-website',
   site: 'https://ygwill.top',
 }
 
@@ -24,6 +24,30 @@ export const characterRepos = {
 }
 
 // 「献予X之诗」是昔涟那边德谬歌的专属机制，本角色技能里没有这批条目，故留空
+// tag -> 已上线的角色页子域（由 CF 自动部署）。还没上线的角色不要写，链接会自动退回 Gitea 仓库页。
+// 注意仓库名与子域名可以不同：evernight 的仓库叫 character-march7th-evenight，子域是 evenight。
+export const charSites = {
+  cyrene: 'https://cyrene.ygwill.top',
+  hyacine: 'https://hyacine.ygwill.top',
+  castorice: 'https://castorice.ygwill.top',
+  evernight: 'https://evenight.ygwill.top',
+}
+
+// 跨角色跳转的地址：优先角色页，其次组织内的角色仓库，都没有就返回空串（组件里 v-if 退化掉链接）
+export function charLink(tag) {
+  if (!tag) return ''
+  if (charSites[tag]) return charSites[tag]
+  const repo = characterRepos[tag]
+  return repo ? org.url + '/' + repo : ''
+}
+
+export function charLinkLabel(tag) {
+  return charSites[tag] ? '→ 角色页' : '→ 角色仓库'
+}
+
+// 「献诗」栏目存在时的一句话说明，没有这类机制就留空
+export const poemNote = ''
+
 export const poemOwners = {}
 
 export const dataSources = [

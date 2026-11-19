@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { fillParams } from '../utils/format.js'
 import { iconUrl } from '../utils/assets.js'
-import { charTags, characterRepos, org, poemOwners } from '../data/site.js'
+import { charLink, charLinkLabel, charTags, poemOwners } from '../data/site.js'
 const props = defineProps({ char: { type: Object, required: true } })
 
 const poems = computed(() =>
@@ -11,8 +11,8 @@ const poems = computed(() =>
     .map((s) => {
       const spark = s.name.match(/献予「(.+?)」之诗/)[1]
       const owner = poemOwners[spark] || ''
-      const repo = characterRepos[charTags[owner]]
-      return { ...s, spark, owner, repoUrl: repo ? org.url + '/' + repo : '' }
+      const tag = charTags[owner]
+      return { ...s, spark, owner, link: charLink(tag), linkLabel: charLinkLabel(tag) }
     }),
 )
 </script>
@@ -21,7 +21,7 @@ const poems = computed(() =>
   <div class="panel">
     <h2 class="panel-title">献予诸火种之诗（{{ poems.length }} 条）</h2>
     <p class="muted small" style="margin-top:0">
-      德谬歌对队友逐一赋诗，每条对应一位黄金裔或「记忆」。名字后标注已建成的角色仓库可直接跳转。
+      每条「献予某火种」之诗对应一位黄金裔或「记忆」，受诗者标在名字后，可直接跳到她的角色页（还没上线的跳到仓库页）。
     </p>
     <div class="poems">
       <article v-for="p in poems" :key="p.id" class="poem">
@@ -32,7 +32,7 @@ const poems = computed(() =>
             <p class="who">
               火种<em>「{{ p.spark }}」</em>
               <span>· {{ p.owner }}</span>
-              <a v-if="p.repoUrl" :href="p.repoUrl" class="small">→ 角色仓库</a>
+              <a v-if="p.link" :href="p.link" class="small">{{ p.linkLabel }}</a>
             </p>
           </div>
         </header>

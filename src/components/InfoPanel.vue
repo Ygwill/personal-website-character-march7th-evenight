@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { unknownFields } from '../data/site.js'
+import { poemNote, unknownFields } from '../data/site.js'
 const props = defineProps({ char: { type: Object, required: true } })
 
 const rows = computed(() => [
@@ -13,6 +13,9 @@ const rows = computed(() => [
   ['昵称 / 本名', (props.char.nickname || []).join('、')],
   ['档案条数', props.char.lore.length + ' 条（见「档案」）'],
 ])
+
+// 「献予X之诗」是德谬歌赋诗那批忆灵技的命名特征，只有昔涟有；栏目与说明都按数据里是否真有这些条目决定
+const poems = computed(() => props.char.skills.filter((s) => s.name.includes('献予「')))
 
 // 忆灵：技能类型以 Memosprite 开头的条目（各角色通用）
 const memosprite = computed(() => props.char.skills.filter((s) => s.type.startsWith('Memosprite')))
@@ -47,8 +50,8 @@ const types = computed(() => {
           <span>{{ t[0] }}</span><b>{{ t[1] }}</b>
         </li>
       </ul>
-      <p class="small muted">
-        「献诗」栏目单独列出 14 条<em class="tag-poem">「 ◌ 献予某火种 」</em>的忆灵技 —— 这是昔涟最核心的设计：她的强度长在队友身上。
+      <p v-if="poems.length" class="small muted">
+        「献诗」栏目单独列出 {{ poems.length }} 条<em class="tag-poem">「 ◌ 献予某火种 」</em>的忆灵技{{ poemNote ? ' —— ' + poemNote + '。' : '，逐条见「献诗」栏目。' }}
       </p>
     </div>
 

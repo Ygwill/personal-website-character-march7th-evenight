@@ -8,7 +8,7 @@
 前端按 basename 找图（src/utils/assets.js），所以本地文件名 = 上游文件名。
 立绘是 2048² 的大 PNG，这里统一缩成 1024² 的 WebP 再入库（LFS 之外也别塞几十 MB）。
 """
-import argparse, json, os, subprocess, sys, urllib.request
+import argparse, json, os, re, subprocess, sys, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, 'tools', 'raw')
@@ -104,6 +104,19 @@ def main():
     portrait = os.path.join(A, 'char', '%s-portrait.webp' % slug)
     big = os.path.join(A, 'char', '_%s-portrait-full.png' % slug)
     jobs.append(('image/character_portrait/%s.png' % cid, big))
+
+    # 兜底：gen.py 已经把「本页会引用的全部素材」整理进 src/data/character.js 的 iconPaths，
+    # 按它补齐最稳（早先只靠逐个索引推导，会漏掉星魂图标 rank*.png 与星魂材料图标 icon/item/*）
+    cj = os.path.join(ROOT, 'src', 'data', 'character.js')
+    if os.path.exists(cj):
+        txt = open(cj, encoding='utf-8').read()
+        mm = re.search(r'"iconPaths": (\{.*?\n  \})', txt, re.S)
+        if mm:
+            for name, up in json.loads(mm.group(1)).items():
+                sub = 'items' if up.startswith('icon/item/') else 'icons'
+                jobs.append((up, os.path.join(A, sub, name)))
+        else:
+            print('  !! character.js 里没找到 iconPaths，只用索引推导的结果')
 
     if args.force:
         import glob
