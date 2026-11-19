@@ -3,8 +3,8 @@ export const snapshot = {
   "upstream": "Mar-7th/StarRailRes",
   "branch": "master",
   "langDir": "cn",
-  "fetchedAt": "2026-11-19T11:49:39+08:00",
-  "charId": "1415",
+  "fetchedAt": "2026-11-19T12:22:53+08:00",
+  "charId": "1413",
   "generator": "tools/gen.py",
   "files": [
     {

@@ -1,82 +1,57 @@
-# 角色页模板（崩坏：星穹铁道）
+# 长夜月 · 角色页（崩坏：星穹铁道）
 
-一个角色一个仓库。页面结构参考 wiki 的角色页分栏习惯，**数据全部由官方解包索引生成**，
-不在前端手抄文本、不采信百科类站点的内容。当前是初版：昔涟（1415）跑通，换角色按下面的清单走。
+解包 ID **1413**，官方 tag `evernight`。骨架与取数流水线来自 `personal-website/character-template`；
+数据全部由官方解包索引生成，不在前端手抄文本、不采信百科类站点的内容。
+与模板最大的区别：**图片素材随本仓库提交（Git LFS）**。
 
-模板本身只保留**页面结构与取数脚本**，美术素材一个字节都不放 —— 图归各角色自己的仓库。
+当前取数规模：技能 11 条、行迹 20 个节点、星魂 6 条、档案文案 2 条。
 
 ## 快速开始
 
 ```bash
-git lfs install          # 一次性，本机开启 LFS
-git clone <本仓库>
-cd character-template
+git lfs install
+git clone https://git.ygwill.asia/personal-website/character-march7th-evenight.git
+cd character-march7th-evenight
 npm install
-npm run dev              # http://127.0.0.1:5174
-```
-
-**本仓库不含任何图片**：`src/assets/` 下只有 `.gitkeep`，缺图的位置页面自动退化成文字占位。
-图片由各角色仓库落盘后提交（`.gitattributes` 已把 png/webp/jpg 等接进 **Git LFS**，直接复用）。
-构建产物 `dist/`、依赖 `node_modules/`、取数中间产物 `tools/raw/` 同样不入库。
-
-想先看带图的效果，可以临时回源到上游解包仓库（只建议本地用，别写进构建脚本）：
-
-```bash
-VITE_ICON_CDN=https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/ npm run dev
+npm run dev              # http://127.0.0.1:5177
 ```
 
 ## 数据流
 
 ```
-tools/fetch-data.sh     抓 Mar-7th/StarRailRes 的 index_new/cn/ 共 11 个 JSON -> tools/raw/
-tools/gen.py --id 1415  生成 src/data/character.js（全部文案与数值）+ src/data/snapshot.js（索引指纹）
-tools/fetch-assets.py   按索引里的 icon 字段拉图 -> src/assets/（立绘缩到 1024 边长并转 WebP）
-                        这一步在角色仓库里做，模板仓库不跑、也不收图
+bash tools/fetch-data.sh                 抓 Mar-7th/StarRailRes 的 index_new/cn/ 共 11 个 JSON -> tools/raw/
+python3 tools/gen.py --id 1413           生成 src/data/character.js + src/data/snapshot.js（索引指纹）
+python3 tools/fetch-assets.py --id 1413  按索引 icon 字段拉图 -> src/assets/（立绘缩到 1024 边长并转 WebP）
 ```
 
-`src/data/character.js` **不要手改**，改逻辑改 `tools/gen.py`。
+`src/data/character.js` 和 `src/assets/` 下的图都由脚本生成，**不要手改**，改逻辑改 `tools/gen.py`。
 页面里每个数字都能回溯到某个索引的某个键，见站内「数据溯源」栏目。
+`tools/raw/`、`dist/`、`node_modules/` 不入库。
 
-## 换角色清单
+## 取材口径（写死在这儿，免得日后没人记得）
 
-1. `python3 tools/gen.py --id <角色 ID>`（ID 在 `tools/raw/characters.json` 里查，如 1413 长夜月）
-2. 在 `tools/gen.py` 的 `LORE_IDS` 里补这个角色对应的 `descriptions.json` 条目 id
-   （上游没有「角色→文案」的反向表，只能人工筛；筛不出来就留空）
-3. `python3 tools/fetch-assets.py --id <角色 ID>` —— 图标按索引自动补齐，文件名沿用上游 basename，
-   前端按 basename 匹配（`src/utils/assets.js`）。**图提交进角色仓库**（LFS），不要回填到模板；
-   模板页没图也照样渲染，不报错
-4. 立绘/头像已由脚本按 `<tag>-portrait.webp` / `<tag>-avatar.png` 命名，`tag` 取自索引，无需改名
-5. `src/data/site.js`：
-   - `unknownFields` 换成这个角色自己「缺一手出处所以不写」的字段
-   - `poemOwners`（献诗火种→角色）只在昔涟这类机制里需要，别的角色可清空
-   - `charTags` / `characterRepos` 决定站内跳转，新仓库建成后补一行
-6. `npm run check && npm run build` 都干净再提交
+- 属性算法：`floor(base + step ×(等级-1))`；晋阶档解锁等级 1/20/30/40/50/60/70（自推后逐格核对过）
+- 行迹分类靠 id 尾号约定：`101/102/103` 专属、`201..210` 属性、其余是技能强化节点（索引里没有 kind 字段）
+- 占位符：`#N[i]` 取整、`[f1]`/`[f2]` 保留 1/2 位小数，紧跟 `%` 时先 ×100
+- 技能剔除 `MazeNormal`（大地图挥击，与角色页无关）
+- 档案文案只收 `title` 等于角色名的条目，以及标题带【角色名】的专属条目
+- 与三月七的关系只引档案原文（「相貌相同，互为表里」），是否同一人官方未明说，不下结论
 
-## 自检
+## 自检 / 构建
 
 ```bash
-npm run check    # SSR 逐个渲染每个栏目，出现 undefined / NaN / 缺字段会直接列出来
-npm run build    # 静态构建，base 为相对路径，可直接丢进任意子路径托管
+npm run check    # SSR 逐个栏目渲染，undefined / NaN / 关键串缺失会直接列出
+npm run build    # base 为相对路径，dist/ 可丢进任意子路径托管
 npx vite preview
 ```
 
-`npm run check` 抓到过真问题（属性表把整个 tier 对象传进了取值函数，页面显示 NaN），
-建议每次改完数据或组件都跑一遍。
-
-## 部署
-
-`dist/` 直接静态托管即可（`base: './'`，可放 `/cyrene/` 这类子目录）。
-nginx 侧配法与主站一致，见 `personal-website/main` 的 README。
-
 ## 还没做的
 
-- 语音文本：已核实上游 `index_new/cn`、`index_min/cn` 两个目录（各 23 个索引）里**都没有语音表**，
-  要做得另找一手来源，不硬凑
-- 皮肤（`spinner.json` 不在这个仓库里；wiki 提到的「昔涟·赴约」未采信）
-- 培养材料汇总：已核实「技能等级靠行迹节点提升、技能索引本身不带材料」，所以成本 = 晋阶 + 行迹，
-  数据取得全（昔涟满培养：信用点 330.8 万、命运的足迹 8 个），暂时按决定不做进页面
-- 称号 / 实装日期 / 卡池：解包不含，需官方公告，先挂在「尚未确认」里
+- 语音文本：上游 `index_new/cn`、`index_min/cn` 各 23 个索引里**都没有语音表**，要做得另找一手来源
+- 皮肤：上游没有皮肤表
+- 培养材料汇总：数据取得全（成本 = 晋阶 + 行迹，技能等级提升靠行迹节点），暂未做进页面
+- 称号 / 实装日期 / 卡池：解包不含，需官方公告，先挂在页内「尚未确认」里
 
 ## 声明
 
-非粉丝站运营，仅作资料整理。游戏文本与美术素材版权归米哈游 / HoYoverse 所有。
+非官方站点，仅作资料整理。游戏文本与美术素材版权归米哈游 / HoYoverse 所有。

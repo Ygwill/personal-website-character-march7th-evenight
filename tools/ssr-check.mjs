@@ -53,7 +53,7 @@ async function main() {
   ].filter(Boolean)
   const miss = keys.filter((k) => !joined.includes(k))
   miss.forEach((k) => console.log('✗ 缺失 ' + k))
-  console.log('关键串 %d/%d 命中 %s，总渲染字节 %d（模板不存图，故无 <img> 属正常）',
+  console.log('关键串 %d/%d 命中 %s，总渲染字节 %d（素材齐全时渲染里会带 <img>）',
     keys.length - miss.length, keys.length, JSON.stringify(keys), total)
 }
 main()

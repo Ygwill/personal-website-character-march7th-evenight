@@ -11,7 +11,7 @@ const built = typeof __BUILD_AT__ !== 'undefined' ? __BUILD_AT__ : '（开发模
   <footer class="foot">
     <div class="wrap inner">
       <p class="line">
-        <b>{{ character.name }}</b> · 角色页（模板初版）——
+        <b>{{ character.name }}</b> · 角色页——
         非官方站点，与米哈游 / HoYoverse 无任何关系。
       </p>
       <p class="line small muted">

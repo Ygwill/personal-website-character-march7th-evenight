@@ -25,7 +25,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: { host: '127.0.0.1', port: 5174 },
+  server: { host: '127.0.0.1', port: 5177 },
   // 构建时刻注入页脚，方便判断线上是不是旧包（不是运行时时间）
   define: { __BUILD_AT__: JSON.stringify(new Date().toISOString().replace('T', ' ').slice(0, 16)) },
   build: { outDir: 'dist', assetsDir: 'assets', sourcemap: false },

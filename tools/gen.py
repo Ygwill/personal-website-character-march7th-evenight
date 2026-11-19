@@ -93,8 +93,8 @@ def main():
     c = chars[cid]
     pr = promotions[cid]
 
-    # 模板仓库不存图片素材：这里同时记下每个图标在上游的完整路径，
-    # 前端本地找不到图时可以按这张表回源（也可由角色仓库把图落盘进 src/assets/）。
+    # 顺便记下每个图标在上游的完整路径（素材丢了不用猜前缀，
+    # 前端找不到本地图时可按这张表回源，fetch-assets.py 也照它下载）。
     icon_paths = {}
 
     def icon(src):

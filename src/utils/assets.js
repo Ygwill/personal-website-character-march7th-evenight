@@ -1,10 +1,10 @@
-// 资源解析：模板仓库**不存任何图片**，图留给各角色自己的仓库提交。
+// 资源解析：本仓库的素材在 src/assets/ 下随仓库提交（Git LFS）。
 //   1) 本地图优先：角色仓库跑过 python3 tools/fetch-assets.py 并把图提交进 src/assets/ 时，
 //      这里的 import.meta.glob 就能命中，站点完全自托管，不依赖外部图床；
 //   2) 本地缺图时，只有构建时显式设了 VITE_ICON_CDN 才回源到上游解包仓库的 raw 直链
 //      （实测这台服务器到 cdn.jsdelivr.net 被 connection reset，raw.githubusercontent 可用但要 8s，
 //       国内浏览器端更不可靠，所以这个开关只给本地预览用）；
-//   3) 两者都没有就返回空串，各组件的 v-if 自带文字占位 —— 模板页默认就是这个状态。
+//   3) 两者都没有才返回空串，各组件的 v-if 退化成文字占位。
 import character from '../data/character.js'
 
 const RAW = import.meta.env.VITE_ICON_CDN

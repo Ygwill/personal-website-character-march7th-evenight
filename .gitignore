@@ -34,9 +34,4 @@ pnpm-debug.log*
 tools/raw/
 src/assets/**/_*-portrait-full.png
 
-# ---- 图片素材：模板仓库不放图，由角色仓库各自落盘（.gitattributes 里的 LFS 规则已备好）----
-# 想给本页配图：python3 tools/fetch-assets.py --id <角色ID> 后 git add src/assets 即可
-src/assets/char/*
-src/assets/icons/*
-src/assets/items/*
-!src/assets/*/.gitkeep
+# ---- 素材：本仓库图片随仓库提交（LFS），只忽略转码中间产物 ----

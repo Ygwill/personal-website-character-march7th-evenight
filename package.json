@@ -1,9 +1,9 @@
 {
-  "name": "personal-website-character",
+  "name": "personal-website-character-march7th-evenight",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "角色页仓库模板 · Vue 3 + Vite，数据来自官方解包索引",
+  "description": "长夜月 角色页 · Vue 3 + Vite，数据来自官方解包索引",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
